@@ -155,13 +155,14 @@ export class Reactlander extends Component {
     }
 
     if (this.lander.checkLanded()) {
+      this.state.currentScore = this.lander.getScore();
+      console.log(this.state.currentScore);
       this.gameOver();
       return;
     }
 
-
     // Render messages
-    for (let i = 0; i < this.messages.length; i++) {
+    for (var  i = 0; i < this.messages.length; i++) {
       this.messages[i].render(this.state.context);
     }
 
@@ -189,7 +190,7 @@ export class Reactlander extends Component {
       currentScore: 0,
     });
 
-    this.terrain = new Terrain(this.state, this.state.screen.width, this.state.screen.height, this.power, this.messages);
+    this.terrain = new Terrain(this.state, this.state.screen.width, this.state.screen.height, this.power);
     this.sky = new Sky(this.state.screen.width, this.terrain);
     this.lander = new Lander(this.width, this.height, this.terrain);
     
@@ -205,7 +206,7 @@ export class Reactlander extends Component {
     this.setState({
       inGame: false,
     });
-
+  console.log("CurrentScore in GameOver: " + this.state.currentScore);
     this.terrain = null;
     this.lander=null;
     this.sky=null;
@@ -266,19 +267,20 @@ export class Reactlander extends Component {
   // Render will be called when there is a change of state
   render() {
 
-    //console.log("React Render called");
+    //console.log("React Render called to display");
     let endgame;
     let message;
 
+    
     if (this.state.currentScore <= 0) {
       message = 'No points';
     } else if (this.state.currentScore >= this.state.topScore) {
       message = 'Top score with ' + this.state.currentScore ;
     } else {
-      message = this.state.currentScore + ' Points)'
+      
+      message = this.state.currentScore + ' Points'
     }
-    //console.log(this.state.inGame);
-
+    
     if (!this.state.inGame) {
       endgame = (
         <div className="endgame">

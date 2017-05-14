@@ -11,12 +11,12 @@ import { rotatePoint, randomNumBetween } from './helpers';
 export default class Terrain {
 
 	
-    constructor(state,terrainLength, height, power,messages)
+    constructor(state,terrainLength, height, power)
     {    
 		this.utilities = new Utilities();	
 	
 		// hopefully this works
-		this.messages = messages;
+		
 		this.width = terrainLength;
 		this.height = height;
 		
@@ -31,7 +31,7 @@ export default class Terrain {
 		this.uX = 0;
 		this.uY=0;
 		this.zoom=1;
-		//this.messages = [];
+		this.messages = [];
 		
 		this.y[0] = 450;
 		this.y[this.power] = 450;
@@ -107,7 +107,8 @@ export default class Terrain {
 	//		Lander.removeEntity(this.messages[i]);
 	//	}
 		
-	//	this.messages = [];
+		this.messages=null;
+		this.messages = [];
 		
 		for(var i = 0; i < this.landingPads.length; i++){
 			
@@ -121,10 +122,15 @@ export default class Terrain {
 				this.landingPads[i].multiplier = 1;
 				points = 1;
 			}
+
+			var mesObj = new Message({message : points + 'x', x : ((this.landingPads[i].x + this.landingPads[i].padLength/2)- this.uX) * this.zoom, y : (this.landingPads[i].y * this.zoom) - this.uY + 10, font : this.arial12, type : 2, blinkTime : 500});
 			
-			//var mesObj = new Message({message : points + 'x', x : ((this.landingPads[i].x + this.landingPads[i].padLength/2)- x) * zoom, y : (this.landingPads[i].y * zoom) - y + 10, font : this.arial12, type : 2, blinkTime : 500});
-			
-			//this.messages.push(mesObj);
+			this.messages.push(mesObj.message);
+				//alert("hello:");
+
+			//console.log("Creatingg Terrain");
+
+			mesObj.render(state.context);
 		}
 	
 		context.restore();

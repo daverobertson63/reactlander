@@ -1,21 +1,20 @@
-/*
-
-*/
 
 import Utilities from './Utilities';
 import Vector from './Vector';
 import Lander from './Lander';
 
 export default class Message {
-
 	
-	
-    Message(options)
+    constructor(options)
     {
 		// Required options
 		this.utilities = new Utilities();	
 		this.message = options.message;
+		//console.log('Message Created: ' + options.message);
 		this.pos = new Vector(options.x,options.y,0);
+		//console.log(this.pos);
+		
+		
 		this.font = options.font;
 		this.type = 1;
 		this.visible = 1;

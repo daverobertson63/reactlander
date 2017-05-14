@@ -99,6 +99,12 @@ export default class Lander {
 		return this.landed ;
 	}
 
+	getScore() {
+		//console.log(this.crashed);
+		
+		return this.score ;
+	}
+
 	// Resets the ship for new levels, etc
 	reset(state) {
 		// Check if we are doing a reset because the ship crashed.
@@ -342,12 +348,15 @@ export default class Lander {
 				} else if (this.pos.x < 0 && !this.zoomed) {
 					this.pos.x = this.screenW - 10;
 				}
+				//console.log("No collision - we are on");
 
 			} else {
 				// Check if its on one of the pads				
 				for (var i = 0; i < padsLen; i++) {
 					if (this.pos.x >= ((pads[i].x - this.offsetX) * 3) && this.pos.x <= ((pads[i].x - this.offsetX) * 3) + pads[i].padLength * 3 && this.pos.y > ((pads[i].y * 3) - this.offsetY) - 21) {
-						if (this.rot > -95 && this.rot < -85 && this.yVel >= -6 && this.yVel <= 6) {
+						console.log("Yes on the pad");
+							if ( true) {
+						//if (this.rot > -95 && this.rot < -85 && this.yVel >= -60 && this.yVel <= 60) {
 							var score = 0;
 
 							if (this.yVel >= -3 && this.yVel <= 3) {
@@ -360,13 +369,20 @@ export default class Lander {
 								this.score += score;
 							}
 
+							
 							this.landed = true;
+							// Switch off the thrust ( Might want to take off again!)
+							this.thrust=0;
+							this.isThrusting=false;
+							// I think we drop right out here
 							break;
 						}
 					}
 				}
 
 				if (!this.landed) {
+					console.log("I have crashed");
+					
 					for (var lines = 0; lines < 20; lines++) {
 						var newLine = [];
 
