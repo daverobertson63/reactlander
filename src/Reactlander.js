@@ -1,10 +1,37 @@
+/*
+ Copyright (c) 2010, Jason Brown
+ Copyright (c) 2016 chriz001 https://github.com/chriz001/Reacteroids
+ Copyright (c) 2017 Dave Robertson 
+ 
+ Permission is hereby granted, free of charge, to any person
+ obtaining a copy of this software and associated documentation
+ files (the "Software"), to deal in the Software without
+ restriction, including without limitation the rights to use,
+ copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the
+ Software is furnished to do so, subject to the following
+ conditions:
+
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ OTHER DEALINGS IN THE SOFTWARE.
+
+*/
+
 import React, { Component } from 'react';
 import Utilities from './Utilities';
 import Vector from './Vector';
 import Lander from './Lander';
 import Terrain from './Terrain';
 import Sky from './Sky';
-
 
 import { randomNumBetweenExcluding } from './helpers'
 
@@ -22,6 +49,7 @@ const KEY = {
 };
 
 export class Reactlander extends Component {
+
   constructor() {
     super();
     this.state = {
@@ -51,7 +79,7 @@ export class Reactlander extends Component {
       beginGame: false
     }
 
-    // Current message stack to be rendered
+    // Current message stack to be rendered - not implemented yet
     this.messages = [];
 
     this.utilities = new Utilities();
@@ -122,30 +150,33 @@ export class Reactlander extends Component {
     const context = this.state.context;
     const keys = this.state.keys;
 
+    // The game has completed - crash or whatever - so terminate the update loop 
     if (!this.state.inGame)
     {
-      console.log('Update - ingame');
+      console.log('Update Loop Terminated');
       return;
     }
-    // Controls
+    // Controls - reset the lander - keep the same terrain and off we go.
     if (keys.reset) {
       this.lander.reset(this.state);
     }
-    //const ship = this.ship[0];
 
     this.curTime = (new Date()).getTime();
     this.deltaTime = (this.curTime - this.lastTime) / 100;
     this.lastTime = this.curTime;
 
-
     context.save();
 
     context.scale(this.state.screen.ratio, this.state.screen.ratio);
 
+    // Draw and update the terrain
     this.terrain.draw(this.state);
 
+    // Update the lander postion and so on 
     this.lander.update(this.state, this.deltaTime);
+    // Draw the lander in its current state
     this.lander.draw(context);
+    // Update the sky
     this.sky.draw(this.state);
 
     if (this.lander.checkCrashed()) {
@@ -183,7 +214,7 @@ export class Reactlander extends Component {
   // Start game - create the objects needed 
   startGame() {
 
-    console.log("In startGame");
+    console.log("Starting a new game");
 
     this.setState({
       inGame: true,
@@ -195,7 +226,6 @@ export class Reactlander extends Component {
     this.lander = new Lander(this.width, this.height, this.terrain);
     
     requestAnimationFrame(() => {this.update()});
-
 
   }
 
@@ -221,48 +251,6 @@ export class Reactlander extends Component {
   }
 
 
-
-  createObject(item, group) {
-    this[group].push(item);
-  }
-
-  updateObjects(items, group) {
-    let index = 0;
-    for (let item of items) {
-      if (item.delete) {
-        this[group].splice(index, 1);
-      } else {
-        items[index].render(this.state);
-      }
-      index++;
-    }
-  }
-
-  checkCollisionsWith(items1, items2) {
-    var a = items1.length - 1;
-    var b;
-    for (a; a > -1; --a) {
-      b = items2.length - 1;
-      for (b; b > -1; --b) {
-        var item1 = items1[a];
-        var item2 = items2[b];
-        if (this.checkCollision(item1, item2)) {
-          item1.destroy();
-          item2.destroy();
-        }
-      }
-    }
-  }
-
-  checkCollision(obj1, obj2) {
-    var vx = obj1.position.x - obj2.position.x;
-    var vy = obj1.position.y - obj2.position.y;
-    var length = Math.sqrt(vx * vx + vy * vy);
-    if (length < obj1.radius + obj2.radius) {
-      return true;
-    }
-    return false;
-  }
 
   // Render will be called when there is a change of state
   render() {
